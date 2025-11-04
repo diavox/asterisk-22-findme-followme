@@ -49,6 +49,25 @@ exten => _X.,1,NoOp(Call Entry DNIS=${EXTEN})
  same => n(end),Hangup()
 ```
 
+## 🔔 Parallel Ringing (Simultaneous) Example
+
+Dial extension `7000` from an internal phone to trigger the parallel-ringing
+Find Me example. This will attempt to ring `6003` and `6004` at the same time
+for 30 seconds. If one of the endpoints is not registered or unreachable,
+PJSIP will typically ignore that contact and ring the available ones.
+
+Example behavior:
+- Call 7000 -> Asterisk executes Dial(PJSIP/6003&PJSIP/6004,30)
+- All listed endpoints ring simultaneously
+- If any endpoint answers, the call is bridged and the dialplan continues
+	(DIALSTATUS will be ANSWER)
+- If none answer, the existing Find Me fallback logic and voicemail will
+	be used as configured in the dialplan
+
+This example is intended for demonstration and can be expanded by adding
+more endpoints to the dial string (separated by `&`) or by inserting
+pre-checks to filter only registered contacts if your deployment requires it.
+
 ## 🧩 Version Compatibility
 
 - **Tested on:** Asterisk 22.x
