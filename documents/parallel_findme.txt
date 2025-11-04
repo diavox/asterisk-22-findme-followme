@@ -1,0 +1,31 @@
+Parallel Find-Me (Simultaneous Ringing) Example
+
+Overview:
+- Dial extension 7000 from any internal phone in this example.
+- Asterisk will attempt to ring PJSIP/6003 and PJSIP/6004 at the same time for 30 seconds.
+- If any endpoint answers, the call is bridged to the answering endpoint.
+- If none answer, the dialplan falls back to the existing Find Me sequence and/or voicemail.
+
+How it works:
+- The dialplan builds a dial string containing multiple PJSIP endpoints separated by '&'.
+  Example: PJSIP/6003&PJSIP/6004
+- The Dial() application with that string rings all endpoints simultaneously.
+- The 'g' option on Dial returns control to the dialplan upon answer so the
+  call flow can inspect ${DIALSTATUS} and proceed accordingly.
+
+Notes and extensions:
+- You can add more endpoints to the DIAL_TARGETS variable separated with '&',
+  for example: PJSIP/6003&PJSIP/6004&PJSIP/6005
+- In environments where you want to avoid dialing unregistered endpoints, add
+  a pre-check to only include endpoints with active contacts. This repo's
+  example keeps the dialstring simple for clarity.
+- Adjust RING_TIME to control how long the endpoints ring.
+
+Testing:
+1. Register clients for 6003 and 6004 (softphones or devices).
+2. Call 7000 from an internal extension.
+3. Observe both endpoints ringing.
+4. Answer on one endpoint and verify the call is bridged.
+5. Let the call time out and confirm the fallback logic runs.
+
+This file is for demonstration and reference only.
